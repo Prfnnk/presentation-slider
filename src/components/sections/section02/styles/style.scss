@@ -1,0 +1,33 @@
+.second {
+  background-image: url(../img/more-2.png);
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  &__title {
+    font-size: 45px;
+    color: white;
+    text-align: center;
+    padding-bottom: 230px;
+  }
+
+  &__ice {
+    position: absolute;
+  }
+
+  &::after {
+    content: "";
+    background-image: url(../../section01/img/gradient.png);
+    background-size: cover;
+    width: 995px;
+    height: 99px;
+    background-repeat: no-repeat;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+}
