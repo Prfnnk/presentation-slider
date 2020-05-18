@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import cn from "classnames";
 import "./styles/style.scss";
 import TabOne from "./img/tab-1.png";
@@ -6,17 +6,60 @@ import TabTwo from "./img/tab-2.png";
 import TabThree from "./img/tab-3.png";
 
 const SectionThird = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [translateRange, setTranslateRange] = useState(-10);
+  const [smooth, setSmooth] = useState(false);
+  const [translateSlide, setTranslateSlide] = useState(0);
 
-  console.log(activeTab);
+  const touchStart = (e) => {
+    setSmooth(false);
+  };
+
+  const touchEnd = (e) => {
+    const start = -10;
+    const middle = 295;
+    const end = 605;
+    if (translateRange <= 155) {
+      setTranslateRange(start);
+      setTranslateSlide(0);
+    } else if (translateRange >= 155 && translateRange <= 450) {
+      setTranslateRange(middle);
+      setTranslateSlide(-1024);
+    } else if (translateRange >= 450) {
+      setTranslateRange(end);
+      setTranslateSlide(-2048);
+    }
+    setSmooth(true);
+  };
+
+  const touchMove = (e) => {
+    const clientX = e.touches[0].clientX;
+    const rangeX = clientX - 210;
+    const slideX = -(3.4 * rangeX);
+    setTranslateRange(rangeX);
+    setTranslateSlide(slideX);
+    if (rangeX <= -10) {
+      setTranslateRange(-10);
+    }
+    if (rangeX >= 605) {
+      setTranslateRange(605);
+    }
+
+    if (slideX > 0) {
+      setTranslateSlide(0);
+    }
+    if (slideX < -2048) {
+      setTranslateSlide(-2048);
+    }
+  };
 
   return (
     <div className="third">
       <div
-        className={cn("tabs", {
-          tabs_two: activeTab === 1,
-          tabs_three: activeTab === 2,
-        })}
+        className="tabs"
+        style={{
+          transform: `translateX(${translateSlide}px)`,
+          transition: smooth ? "0.5s" : "0s",
+        }}
       >
         <div className="block__background block__background_one">
           <div className="third__block third__block">
@@ -49,31 +92,29 @@ const SectionThird = () => {
       <div className="slider-block">
         <div className="slider-wrapper">
           <div
-            className={cn("polygon", {
-              polygon_two: activeTab === 1,
-              polygon_three: activeTab === 2,
-            })}
+            className="polygon"
+            style={{
+              transform: `translateX(${translateRange}px)`,
+              transition: smooth ? "0.5s" : "0s",
+            }}
+            onTouchStart={(e) => touchStart(e)}
+            onTouchMove={(e) => touchMove(e)}
+            onTouchEnd={(e) => touchEnd(e)}
           ></div>
 
           <div className="slider"></div>
           <div
-            className={cn("slider", {
-              slider_fill: true,
-              slider_two: activeTab === 1,
-              slider_three: activeTab === 2,
-            })}
+            className="slider slider_fill"
+            style={{
+              width: `${translateRange + 10}px`,
+              transition: smooth ? "0.5s" : "0s",
+            }}
           ></div>
 
           <div className="slider__year">
-            <div className="slider__year-item" onClick={() => setActiveTab(0)}>
-              1988
-            </div>
-            <div className="slider__year-item" onClick={() => setActiveTab(1)}>
-              2009
-            </div>
-            <div className="slider__year-item" onClick={() => setActiveTab(2)}>
-              2016
-            </div>
+            <div className="slider__year-item">1988</div>
+            <div className="slider__year-item">2009</div>
+            <div className="slider__year-item">2016</div>
           </div>
         </div>
       </div>

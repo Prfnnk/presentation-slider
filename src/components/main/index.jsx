@@ -9,6 +9,7 @@ const Main = () => {
   const [activePage, setActivePage] = useState(0);
   const [offsets, setOffsets] = useState([]);
   const [move, setMove] = useState(false);
+  const [touchStartY, setTouchStartY] = useState(0);
 
   useEffect(() => {
     calcSection();
@@ -47,6 +48,7 @@ const Main = () => {
   );
 
   const moveUp = useCallback(() => {
+    console.log(moveUp, "up");
     setMove(true);
     let pageId = activePage + 1;
     setActivePage(pageId);
@@ -59,6 +61,7 @@ const Main = () => {
   }, [activePage, offsets.length, scrollPage]);
 
   const moveDown = useCallback(() => {
+    console.log(moveDown, "down");
     setMove(true);
     let pageId = activePage - 1;
     setActivePage(pageId);
@@ -68,6 +71,7 @@ const Main = () => {
       setActivePage(pageId);
     }
     scrollPage(pageId, true);
+    console.log(activePage, "active");
   }, [activePage, offsets.length, scrollPage]);
 
   const handleMouseWheel = useCallback(
@@ -83,6 +87,32 @@ const Main = () => {
     [move, moveDown, moveUp]
   );
 
+  const touchStart = useCallback((event) => {
+    console.log(event, "kek");
+    event.preventDefault();
+    setTouchStartY(event.touches[0].clientY);
+  }, []);
+
+  const touchMove = useCallback(
+    (event) => {
+      if (move) {
+        return false;
+      }
+      event.preventDefault();
+      const currentY = event.touches[0].clientY;
+      if (touchStartY < currentY) {
+        moveDown(event);
+        event.preventDefault();
+      } else {
+        moveUp(event);
+        event.preventDefault();
+      }
+      setTouchStartY(0);
+      return false;
+    },
+    [move, moveDown, moveUp, touchStartY]
+  );
+
   useEffect(() => {
     window.addEventListener("mousewheel", handleMouseWheel, {
       passive: false,
@@ -92,6 +122,20 @@ const Main = () => {
         passive: false,
       });
   }, [handleMouseWheel]);
+
+  // useEffect(() => {
+  //   window.addEventListener("touchstart", touchStart, {
+  //     passive: false,
+  //   });
+  //   return () => window.removeEventListener("touchstart", touchStart);
+  // }, [touchStart]);
+
+  // // useEffect(() => {
+  // //   window.addEventListener("touchmove", touchMove, {
+  // //     passive: false,
+  // //   });
+  // //   return () => window.removeEventListener("touchmove", touchMove);
+  // // }, [touchMove]);
 
   return (
     <main className="main">
