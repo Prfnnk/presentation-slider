@@ -1,6 +1,5 @@
 import React from "react";
 import "./styles/style.scss";
-import "../../main/styles/style.scss";
 import Arrow from "../section01/img/arrow.png";
 
 import IceOne from "./img/ice_3.png";

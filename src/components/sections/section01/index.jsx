@@ -1,7 +1,6 @@
 import React from "react";
 import "./styles/style.scss";
 import Arrow from "./img/arrow.png";
-import "../../main/styles/style.scss";
 
 const SectionFirst = () => {
   return (

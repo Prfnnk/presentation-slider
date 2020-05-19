@@ -1,5 +1,4 @@
-import React, { useState, useCallback } from "react";
-import cn from "classnames";
+import React, { useState } from "react";
 import "./styles/style.scss";
 import TabOne from "./img/tab-1.png";
 import TabTwo from "./img/tab-2.png";
@@ -32,9 +31,10 @@ const SectionThird = () => {
   };
 
   const touchMove = (e) => {
+    e.stopPropagation();
     const clientX = e.touches[0].clientX;
     const rangeX = clientX - 210;
-    const slideX = -(3.4 * rangeX);
+    const slideX = -(3.4 * rangeX); // 3,4 - коэффициент ширины слайда относительно одного сектора range
     setTranslateRange(rangeX);
     setTranslateSlide(slideX);
     if (rangeX <= -10) {
